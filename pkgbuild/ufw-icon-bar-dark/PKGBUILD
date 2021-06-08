@@ -1,0 +1,25 @@
+# Maintainer: Alif Uzair bin Abd Rahman <riazufila at gmail dot com>
+# Contributor: Cole Thompson <cole dot thompson at gmail dot com>
+pkgname=ufw-icon-bar-dark
+pkgver=1.1
+pkgrel=2
+pkgdesc="System tray icon for ufw dark"
+arch=('any')
+url="https://github.com/juanmafont/ufwIconbar"
+license=('unknown')
+depends=('yad' 'ufw')
+optdepends=('gufw: Enables gufw to open when icon is clicked')
+makedepends=('git')
+conflicts=('ufw-icon-bar')
+source=("$pkgname-$pkgver::git+https://github.com/juanmafont/ufwIconbar.git"
+        artist-ufw-icon-bar-dark.patch)
+md5sums=('SKIP'
+         '01450af2843b14c8eb1443f001dd138e')
+
+prepare() {
+    patch "../src/${pkgname}-${pkgver}/gufw_icon.sh" < ../src/artist-ufw-icon-bar-dark.patch
+}
+
+package() {
+    install -Dm 755 "$srcdir/$pkgname-$pkgver/gufw_icon.sh" "$pkgdir/usr/bin/gufw_icon.sh"
+}

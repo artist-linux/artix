@@ -1,0 +1,34 @@
+# Maintainer: Carlo den Otter <artist@artixlinux.org>
+
+_pkgname=onedrive
+#pkgname=$_pkgname-abraunegg
+pkgname=$_pkgname-abraunegg-dev
+pkgver=2.4.13
+pkgrel=1
+#epoch=
+pkgdesc="Free OneDrive client written in D - abraunegg's fork. Follows the releases on https://github.com/abraunegg/onedrive/releases"
+arch=('i686' 'x86_64' 'armv7h' 'aarch64')
+url="https://github.com/abraunegg/onedrive"
+license=('GPL')
+#conflicts=('onedrive' 'onedrive-abraunegg-git' 'onedrive-bin' 'onedrive-git' 'onedrive-fork-git')
+conflicts=('onedrive' 'onedrive-abraunegg-git' 'onedrive-bin' 'onedrive-git' 'onedrive-fork-git' 'onedrive-abraunegg')
+#source=("https://github.com/abraunegg/onedrive/archive/v$pkgver.tar.gz")
+source=("https://github.com/abraunegg/onedrive/archive/master.zip")
+provides=("onedrive=$pkgver")
+#depends=('curl' 'libnotify' 'sqlite' 'd-runtime')
+depends=('curl' 'libnotify' 'sqlite')
+makedepends=('d-compiler')
+
+build() {
+        mv onedrive-master "$_pkgname-$pkgver"
+	cd "$_pkgname-$pkgver"
+        ./configure --sysconfdir=/etc --prefix=/usr --with-systemdsystemunitdir=/usr/lib/systemd/system --with-systemduserunitdir=/usr/lib/systemd/user --enable-notifications --enable-completions
+        make
+}
+
+package() {
+	cd "$_pkgname-$pkgver"
+	make DESTDIR=$pkgdir PREFIX=/usr install
+}
+md5sums=('aaf560a1f2dc4be4b3c34225fd6c5247')
+

@@ -1,0 +1,40 @@
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+
+pkgname=remmina
+epoch=1
+pkgver=1.4.18
+pkgrel=1
+pkgdesc="remote desktop client written in GTK+"
+arch=(x86_64)
+url="https://www.remmina.org/"
+license=('GPL')
+depends=('avahi' 'libgcrypt' 'libssh' 'vte3' 'libsodium' 'libappindicator-gtk3')
+makedepends=('cmake' 'freerdp' 'libvncserver' 'spice-gtk' 'spice-protocol' 'telepathy-glib'
+             'harfbuzz' 'xorgproto' 'gobject-introspection' 'kwallet')
+optdepends=('freerdp: RDP plugin'
+            'libsecret: Secret plugin'
+            'libvncserver: VNC plugin'
+            'libxkbfile: NX plugin'
+            'nxproxy: NX plugin'
+            'spice-gtk: Spice plugin'
+            'telepathy-glib: Telepathy plugin'
+            'xorg-server-xephyr: XDMCP plugin'
+            'gnome-terminal: external tools')
+replaces=('remmina-plugins')
+provides=('remmina-plugins')
+source=("$pkgname-$pkgver.tar.bz2::https://gitlab.com/Remmina/Remmina/-/archive/v${pkgver/rc/-rc}/Remmina-v${pkgver/rc/-rc}.tar.bz2")
+sha512sums=('1e1a8facc9503c24cc36d4c6597f810629f8c7b3138c7633193c2ef984585c0ccc9ba9432df469c584c6bab70fab8090aec021b9cda668240be769eeb22e81b4')
+
+build() {
+  cmake -S Remmina-v${pkgver/rc/-rc} -B build \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=/usr/lib \
+    -DWITH_APPINDICATOR=ON \
+    -DWITH_NEWS=OFF \
+    -DWITH_KF5WALLET=ON
+  cmake --build build
+}
+
+package() {
+  DESTDIR="$pkgdir" cmake --install build
+}
