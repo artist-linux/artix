@@ -1,0 +1,39 @@
+# Maintainer: Levente Polyak <anthraxx[at]archlinux[dot]org>
+# Contributor: Blaž Tomažič <blaz.tomazic@gmail.com>
+
+pkgname=clamtk
+pkgver=6.11
+pkgrel=1
+pkgdesc='Easy to use, light-weight, on-demand virus scanner for Linux systems'
+url='https://gitlab.com/dave_m/clamtk/-/wikis/home'
+arch=('any')
+license=('GPL')
+depends=('clamav' 'perl' 'perl-gtk3' 'perl-locale-gettext' 'perl-libwww' 'perl-http-message'
+         'perl-lwp-protocol-https' 'perl-text-csv' 'perl-json' 'python' 'zenity' 'desktop-file-utils'
+         'cron')
+source=(https://github.com/dave-theunsub/clamtk/releases/download/v${pkgver}/clamtk-${pkgver}.tar.xz{,.asc})
+sha512sums=('6fb0512460ae8f9c4762beb012a2539b6eb157c513138e661e10d3a8f615b8b6c9b0876772defa705f0180bea0a8b97fe187c1114611fe75906f8dae108db11c'
+            'SKIP')
+validpgpkeys=('5DD47B3B121EE5C354A20305F51D19546ADA59DE') # Dave Mauroni <dave.nerd@gmail.com>
+
+package() {
+  cd ${pkgname}-${pkgver}
+
+  install -Dm 755 clamtk -t "${pkgdir}/usr/bin"
+  for f in lib/* ; do
+    install -Dm 644 "${f}" "${pkgdir}/usr/share/perl5/vendor_perl/ClamTk/$(basename "${f}")"
+  done
+
+  for f in po/*.mo ; do
+    install -Dm 644 "${f}" "${pkgdir}/usr/share/locale/$(basename "${f}" .mo)/LC_MESSAGES/clamtk.mo"
+  done
+
+  install -Dm 644 clamtk.1.gz -t "${pkgdir}/usr/share/man/man1"
+  install -Dm 644 CHANGES DISCLAIMER README.md -t "${pkgdir}/usr/share/doc/${pkgname}"
+  install -Dm 644 LICENSE -t "${pkgdir}/usr/share/licenses/${pkgname}"
+
+  install -Dm 644 images/clamtk.{xpm,png} -t "${pkgdir}/usr/share/pixmaps"
+  install -Dm 644 clamtk.desktop -t "${pkgdir}/usr/share/applications"
+}
+
+# vim: ts=2 sw=2 et:
